@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Errl API Library
  * 2015, Errl, Geoff Manning
  * Namespace: errl
@@ -93,11 +93,11 @@ var errl = errl || {};
     ns.log = function () {
 
         if (!ns.config) {
-            throw new Error('ErrL has not been configured');
+            throw new Error('Errl has not been configured');
         }
 
         if (!arguments[0] || arguments[0].length < 5) {
-            throw new Error('ErrL log function was passed unexpected number of arguments');
+            throw new Error('Errl log function was passed unexpected number of arguments');
         }
 
         // build exception object from expected args
