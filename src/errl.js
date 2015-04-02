@@ -5,8 +5,9 @@
  * 
  * Example Configuration:
  *   errl.config = {
- *       key: '54263eb4-6ced-49bf-9bd7-14f0106c2a02',
- *       product: 'ErrL',
+ *       developer: 'AwesomeSauft
+ *       key: '000000000-0000-0000-0000-000000000000',
+ *       product: 'Errl',
  *       environment: null, // optional
  *       version: '1.0.0',
  *       getState: null, // optional
@@ -19,12 +20,12 @@
  * Usage: window.onerror = function () { errl.log(arguments); }
  * 
  */
- 
-var errl = errl || {};
 
-(function (ns, $) {
+(function (exports) {
     'use strict';
 
+	var $ = require('jquery');
+	
     var _HTTP = 'http';
     var _HOST_NAME = 'errl.hoomanlogic.com';
 
@@ -55,12 +56,12 @@ var errl = errl || {};
         var state = {};
 
         // pull custom vendor-defined state from config
-        if (ns.config.getState) {
-            state = ns.config.getState();
+        if (exports.config.getState) {
+            state = exports.config.getState();
         }
 
         // add helpful state info
-        state.browser = ns.browser;
+        state.browser = exports.browser;
         state.platform = navigator.platform;
         state.cookieEnabled = navigator.cookieEnabled;
         state.language = navigator.language;
@@ -75,24 +76,24 @@ var errl = errl || {};
 
     var _getUser = function () {
         var user = '$anonymous';
-        if (ns.config.getUser) {
-            user = ns.config.getUser();
+        if (exports.config.getUser) {
+            user = exports.config.getUser();
         }
         return user;
     };
 
-    ns.getErrorDetailUrl = function (errorId) {
+    exports.getErrorDetailUrl = function (errorId) {
         return _HTTP + '://' + _HOST_NAME + '/errordetail?developer=' + encodeURIComponent(errl.config.developer) + '&product=' + encodeURIComponent(errl.config.product) + '&user=' + encodeURIComponent(errl.config.getUser()) + '&error=' + encodeURIComponent(errorId);
 
     };
 
 	var _getHost = function () {
-		return (ns.config.host || (_HTTP + '://' + _HOST_NAME));
+		return (exports.config.host || (_HTTP + '://' + _HOST_NAME));
 	};
 	
-    ns.log = function () {
+    exports.log = function () {
 
-        if (!ns.config) {
+        if (!exports.config) {
             throw new Error('Errl has not been configured');
         }
 
@@ -140,10 +141,10 @@ var errl = errl || {};
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                key: ns.config.key,
-                productName: ns.config.product,
-                environment: ns.config.environment,
-                version: ns.config.version,
+                key: exports.config.key,
+                productName: exports.config.product,
+                environment: exports.config.environment,
+                version: exports.config.version,
                 errorType: errorType,
                 errorDescription: errorMessage,
                 objectName: objectName,         // in JS, we use the resource uri for the object name (relative path of js file throwing the error)
@@ -155,7 +156,7 @@ var errl = errl || {};
             })
         }).done(function (errorId) {
             var error = { errorId: errorId, errorMessage: errorMessage };
-            ns.config.onLogged(error);
+            exports.config.onLogged(error);
             errl.latestError = error;
         }).fail(function (jqXHR, textStatus, errorThrown) {
             // the following url structure could give a user the ability to see details on an error (if the account chooses to enable this functionality)
@@ -164,8 +165,4 @@ var errl = errl || {};
         });
     };
 
-}(errl, $));
-
-window.onerror = function () {
-    errl.log(arguments);
-};
+}(typeof exports === 'undefined' ? this['hlapp'] = {}: exports));
