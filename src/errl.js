@@ -24,8 +24,10 @@
 (function (exports) {
     'use strict';
 
-	var $ = require('jquery');
-	
+    if (typeof require !== 'undefined') {
+	   var $ = require('jquery');
+    }
+    
     var _HTTP = 'http';
     var _HOST_NAME = 'errl.hoomanlogic.com';
 
